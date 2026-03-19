@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abhishek63AA — Anime AI Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#04000f; --s1:#0a0020; --pink:#ff3cac; --blue:#00d4ff;
+  --gold:#ffd700; --purple:#8b00ff; --white:#f0e6ff; --muted:#8877aa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
+.sakura-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.petal{position:absolute;width:8px;height:8px;background:linear-gradient(135deg,#ff3cac,#ff9ef5);border-radius:0 100% 0 100%;opacity:0;animation:fall linear infinite;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:0.8;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+.bg-layer{position:fixed;inset:0;background:radial-gradient(ellipse at 15% 15%,#8b00ff33 0%,transparent 45%),radial-gradient(ellipse at 85% 85%,#ff3cac22 0%,transparent 45%);pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:16px;}
+header{text-align:center;padding:30px 0 20px;}
+.crown{font-size:2rem;display:inline-block;animation:spin3d 4s ease-in-out infinite;}
+@keyframes spin3d{0%,100%{transform:rotateY(0)}50%{transform:rotateY(180deg)}}
+.brand{font-family:'Cinzel Decorative',serif;font-size:clamp(1.1rem,4vw,1.8rem);font-weight:900;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue),var(--gold));background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;letter-spacing:2px;margin:6px 0 2px;}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:300%}}
+.subtitle{font-size:0.8rem;color:var(--muted);letter-spacing:4px;text-transform:uppercase;}
+.badge-row{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{font-size:0.65rem;letter-spacing:2px;padding:4px 12px;border-radius:20px;font-weight:700;}
+.badge-pink{background:rgba(255,60,172,0.15);border:1px solid var(--pink);color:var(--pink);}
+.badge-blue{background:rgba(0,212,255,0.15);border:1px solid var(--blue);color:var(--blue);}
+.badge-gold{background:rgba(255,215,0,0.15);border:1px solid var(--gold);color:var(--gold);}
+.card{background:linear-gradient(135deg,#0d001f,#1a0035);border:1px solid rgba(139,0,255,0.25);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 0 30px rgba(139,0,255,0.1);}
+.section-label{font-size:0.65rem;letter-spacing:3px;color:var(--pink);text-transform:uppercase;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--pink),transparent);}
+.anime-styles{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:8px;margin-bottom:16px;}
+.anime-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,60,172,0.2);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.25s;user-select:none;}
+.anime-chip:hover,.anime-chip.active{background:rgba(255,60,172,0.2);border-color:var(--pink);box-shadow:0 0 15px rgba(255,60,172,0.4);transform:translateY(-2px);}
+.chip-icon{font-size:1.3rem;display:block;margin-bottom:4px;}
+.chip-name{font-size:0.7rem;color:var(--white);font-weight:600;}
+.chip-sub{font-size:0.58rem;color:var(--muted);margin-top:2px;}
+.quick-row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0;}
+.q-tag{background:rgba(139,0,255,0.12);border:1px solid rgba(139,0,255,0.3);border-radius:20px;color:var(--muted);font-size:0.75rem;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.q-tag:hover{background:rgba(139,0,255,0.25);color:var(--white);border-color:var(--purple);}
+textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(0,212,255,0.25);border-radius:12px;color:var(--white);font-family:'Nunito',sans-serif;font-size:0.95rem;padding:14px 16px;resize:vertical;min-height:80px;outline:none;transition:border-color 0.3s,box-shadow 0.3s;}
+textarea:focus{border-color:var(--blue);box-shadow:0 0 15px rgba(0,212,255,0.25);}
+textarea::placeholder{color:var(--muted);font-size:0.85rem;}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 16px;}
+.opt-group label{display:block;font-size:0.65rem;letter-spacing:2px;color:var(--blue);margin-bottom:6px;text-transform:uppercase;}
+select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:8px;color:var(--white);font-family:'Nunito',sans-serif;font-size:0.85rem;padding:9px 12px;outline:none;cursor:pointer;}
+.gen-btn{width:100%;background:linear-gradient(135deg,#8b00ff,#ff3cac,#00d4ff);background-size:200%;border:none;border-radius:14px;color:#fff;font-family:'Cinzel Decorative',serif;font-size:1rem;font-weight:700;letter-spacing:2px;padding:16px;cursor:pointer;transition:all 0.3s;animation:btnS 3s linear infinite;text-shadow:0 0 10px rgba(255,255,255,0.5);}
+@keyframes btnS{0%{background-position:0%}100%{background-position:200%}}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,60,172,0.5);}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;animation:none;}
+.loading-box{display:none;flex-direction:column;align-items:center;gap:20px;padding:50px 20px;}
+.loading-box.active{display:flex;}
+.anime-loader{position:relative;width:80px;height:80px;}
+.loader-ring{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;animation:spinR 1.5s linear infinite;}
+.lr1{border-top-color:var(--pink);animation-duration:1s;}
+.lr2{border-right-color:var(--blue);animation-duration:1.5s;inset:8px;}
+.lr3{border-bottom-color:var(--gold);animation-duration:2s;inset:16px;}
+@keyframes spinR{to{transform:rotate(360deg)}}
+.loader-core{position:absolute;inset:24px;background:radial-gradient(circle,var(--pink),var(--purple));border-radius:50%;animation:coreP 1s ease-in-out infinite alternate;}
+@keyframes coreP{0%{transform:scale(0.8);opacity:0.7}100%{transform:scale(1.2);opacity:1}}
+.load-text{font-family:'Cinzel Decorative',serif;font-size:0.75rem;color:var(--pink);letter-spacing:3px;animation:blk 1.5s infinite;}
+@keyframes blk{0%,100%{opacity:1}50%{opacity:0.2}}
+.load-sub{font-size:0.82rem;color:var(--muted);text-align:center;line-height:1.7;}
+.result-box{display:none;animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);margin-bottom:16px;}
+.result-box.active{display:block;}
+@keyframes popIn{0%{opacity:0;transform:scale(0.85) translateY(30px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.result-card{background:linear-gradient(135deg,#0d001f,#1a0035);border:1px solid rgba(255,60,172,0.3);border-radius:18px;overflow:hidden;box-shadow:0 0 40px rgba(255,60,172,0.2);}
+.result-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid rgba(255,60,172,0.15);background:rgba(255,60,172,0.05);}
+.result-title{font-family:'Cinzel Decorative',serif;font-size:0.65rem;letter-spacing:3px;color:var(--pink);}
+.dl-btn{background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:8px;color:var(--gold);font-size:0.7rem;font-weight:700;padding:7px 14px;text-decoration:none;transition:all 0.2s;display:inline-block;}
+.dl-btn:hover{background:rgba(255,215,0,0.2);box-shadow:0 0 15px rgba(255,215,0,0.4);}
+.img-frame{padding:16px;text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;}
+#outImg{max-width:100%;border-radius:12px;display:block;box-shadow:0 0 30px rgba(255,60,172,0.3);}
+.img-info{padding:10px 18px;border-top:1px solid rgba(255,60,172,0.1);display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);}
+.err-msg{display:none;text-align:center;padding:20px;font-size:0.9rem;line-height:2;}
+.err-msg.active{display:block;}
+.history-wrap{margin-top:8px;}
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;}
+.hist-item{border-radius:12px;overflow:hidden;border:1px solid rgba(255,60,172,0.2);cursor:pointer;transition:all 0.25s;background:var(--s1);}
+.hist-item:hover{border-color:var(--pink);box-shadow:0 0 20px rgba(255,60,172,0.3);transform:scale(1.04);}
+.hist-item img{width:100%;height:100px;object-fit:cover;display:block;}
+.hist-prompt{padding:6px 8px;font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+footer{text-align:center;padding:28px 0 20px;font-size:0.78rem;color:var(--muted);}
+footer .hl{color:var(--pink);font-weight:700;}
+footer .hl2{color:var(--gold);font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="sakura-bg" id="sakura"></div>
+<div class="bg-layer"></div>
+
+<div class="wrap">
+  <header>
+    <div class="crown">👑</div>
+    <div class="brand">Abhishek63AA</div>
+    <div class="subtitle">Anime AI Studio</div>
+    <div class="badge-row">
+      <span class="badge badge-pink">🎌 ANIME</span>
+      <span class="badge badge-blue">✨ 8K QUALITY</span>
+      <span class="badge badge-gold">⚡ FREE &amp; UNLIMITED</span>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="section-label">🎨 Anime Style ಆಯ್ಕೆ ಮಾಡಿ</div>
+    <div class="anime-styles">
+      <div class="anime-chip active" onclick="pickStyle(this,'anime masterpiece, highly detailed, vibrant colors, 8k')"><span class="chip-icon">🌸</span><span class="chip-name">Classic</span><span class="chip-sub">Anime</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'shonen anime, dynamic action, intense, detailed, 8k')"><span class="chip-icon">⚔️</span><span class="chip-name">Shonen</span><span class="chip-sub">Action</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'studio ghibli style, soft watercolor, magical, 8k')"><span class="chip-icon">🏔️</span><span class="chip-name">Ghibli</span><span class="chip-sub">Magical</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'dark fantasy anime, gothic, dramatic lighting, 8k')"><span class="chip-icon">🌑</span><span class="chip-name">Dark</span><span class="chip-sub">Gothic</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'cyberpunk anime, neon lights, futuristic, rain, 8k')"><span class="chip-icon">🤖</span><span class="chip-name">Cyberpunk</span><span class="chip-sub">Neon</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'cute chibi anime, kawaii, pastel colors, 8k')"><span class="chip-icon">🐾</span><span class="chip-name">Chibi</span><span class="chip-sub">Kawaii</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'naruto anime style, ninja, chakra effects, 8k')"><span class="chip-icon">🍃</span><span class="chip-name">Naruto</span><span class="chip-sub">Ninja</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'demon slayer anime, breathing effects, sword, 8k')"><span class="chip-icon">🗡️</span><span class="chip-name">Demon Slayer</span><span class="chip-sub">Kimetsu</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'dragon ball super anime, super saiyan, ki aura, 8k')"><span class="chip-icon">🔥</span><span class="chip-name">Dragon Ball</span><span class="chip-sub">Saiyan</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'one piece anime, pirate adventure, sea, 8k')"><span class="chip-icon">🏴‍☠️</span><span class="chip-name">One Piece</span><span class="chip-sub">Pirate</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'isekai fantasy anime, epic magic, glowing, 8k')"><span class="chip-icon">🧙</span><span class="chip-name">Isekai</span><span class="chip-sub">Fantasy</span></div>
+      <div class="anime-chip" onclick="pickStyle(this,'romance anime, soft lighting, cherry blossoms, dreamy, 8k')"><span class="chip-icon">🌸</span><span class="chip-name">Romance</span><span class="chip-sub">Dreamy</span></div>
+    </div>
+
+    <div class="section-label">⚡ ತ್ವರಿತ Prompts</div>
+    <div class="quick-row">
+      <span class="q-tag" onclick="setP('anime girl with long silver hair, glowing blue eyes, cherry blossom background')">🌸 Anime Girl</span>
+      <span class="q-tag" onclick="setP('powerful anime warrior with katana, lightning effects, epic pose')">⚔️ Warrior</span>
+      <span class="q-tag" onclick="setP('Hinata Hyuga, byakugan eyes, lavender hair, ninja outfit, beautiful')">💜 Hinata</span>
+      <span class="q-tag" onclick="setP('anime dragon breathing fire, epic sky, detailed scales')">🐉 Dragon</span>
+      <span class="q-tag" onclick="setP('anime boy with sharingan eyes, dark cloak, Itachi Uchiha')">👁️ Sharingan</span>
+      <span class="q-tag" onclick="setP('magical anime witch casting spell, glowing magic circle')">🧙 Witch</span>
+      <span class="q-tag" onclick="setP('anime hero with super powers, glowing aura, dramatic sky')">💥 Hero</span>
+      <span class="q-tag" onclick="setP('beautiful anime landscape, sakura trees, mountain, sunset')">🗻 Landscape</span>
+    </div>
+
+    <div class="section-label">✍️ ನಿಮ್ಮ Prompt ಬರೆಯಿರಿ</div>
+    <textarea id="promptTxt" placeholder="ಉದಾಹರಣೆ: Hinata Hyuga, byakugan eyes, ninja outfit...&#10;ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಬರೆದರೆ ಒಳ್ಳೆ ಚಿತ್ರ ಬರುತ್ತದೆ 🎌"></textarea>
+
+    <div class="options-grid">
+      <div class="opt-group">
+        <label>📐 ಗಾತ್ರ</label>
+        <select id="sizeOpt">
+          <option value="512x512">512×512 (Fast)</option>
+          <option value="768x768">768×768</option>
+          <option value="1024x1024" selected>1024×1024 HD</option>
+          <option value="1280x720">1280×720 Wide</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>✨ Quality</label>
+        <select id="qualOpt">
+          <option value="masterpiece, best quality, 8k, ultra detailed, sharp focus">🏆 8K Master</option>
+          <option value="high quality, detailed, 4k">⭐ 4K Quality</option>
+          <option value="cinematic, dramatic lighting, 8k">🎬 Cinematic</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">🎌 GENERATE ANIME IMAGE 🎌</button>
+  </div>
+
+  <div class="loading-box" id="loadBox">
+    <div class="anime-loader">
+      <div class="loader-ring lr1"></div>
+      <div class="loader-ring lr2"></div>
+      <div class="loader-ring lr3"></div>
+      <div class="loader-core"></div>
+    </div>
+    <div class="load-text">GENERATING...</div>
+    <div class="load-sub">8K Anime ಚಿತ್ರ ತಯಾರಾಗುತ್ತಿದೆ 🎌<br>20-60 ಸೆಕೆಂಡ್ ಕಾಯಿರಿ 🙏</div>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="result-card">
+      <div class="result-top">
+        <div class="result-title">✦ ANIME MASTERPIECE ✦</div>
+        <a class="dl-btn" id="dlBtn" href="#" target="_blank">⬇ OPEN &amp; SAVE</a>
+      </div>
+      <div class="img-frame">
+        <img id="outImg" src="" alt="Anime Image" onload="onImgLoad()" onerror="onImgError()" style="max-width:100%;border-radius:12px;box-shadow:0 0 30px rgba(255,60,172,0.3);" />
+      </div>
+      <div class="img-info">
+        <span id="infoPrompt">—</span>
+        <span id="infoSize">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="err-msg" id="errMsg"></div>
+
+  <div class="history-wrap" id="histWrap" style="display:none">
+    <div class="card" style="padding:18px">
+      <div class="section-label">🕒 ಹಿಂದಿನ ಚಿತ್ರಗಳು</div>
+      <div class="hist-grid" id="histGrid"></div>
+    </div>
+  </div>
+
+  <footer>Created by <span class="hl">Abhishek63AA</span> &nbsp;•&nbsp; Powered by <span class="hl2">Pollinations AI</span> &nbsp;•&nbsp; 100% Free &amp; Unlimited 🎌</footer>
+</div>
+
+<script>
+// Sakura
+(function(){
+  const c=document.getElementById('sakura');
+  for(let i=0;i<15;i++){
+    const p=document.createElement('div');
+    p.className='petal';
+    p.style.cssText=`left:${Math.random()*100}vw;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;animation-duration:${7+Math.random()*10}s;animation-delay:${Math.random()*12}s;`;
+    c.appendChild(p);
+  }
+})();
+
+let curStyle='anime masterpiece, highly detailed, vibrant colors, 8k';
+let histArr=[];
+let curUrl='';
+let genTimer=null;
+
+function pickStyle(el,style){
+  document.querySelectorAll('.anime-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); curStyle=style;
+}
+function setP(t){ document.getElementById('promptTxt').value=t; }
+
+function onImgLoad(){
+  if(genTimer){ clearTimeout(genTimer); genTimer=null; }
+  document.getElementById('loadBox').classList.remove('active');
+  document.getElementById('resultBox').classList.add('active');
+  document.getElementById('genBtn').disabled=false;
+  addHistory(curUrl, document.getElementById('promptTxt').value.trim());
+}
+
+function onImgError(){
+  if(genTimer){ clearTimeout(genTimer); genTimer=null; }
+  document.getElementById('loadBox').classList.remove('active');
+  document.getElementById('resultBox').classList.remove('active');
+  document.getElementById('genBtn').disabled=false;
+  const e=document.getElementById('errMsg');
+  e.classList.add('active');
+  e.innerHTML=`<span style="color:var(--pink)">⚠️ ಚಿತ್ರ ಬರಲಿಲ್ಲ 🥺</span><br><br>
+    <span style="color:#8877aa;font-size:0.82rem">
+    ✅ 4G/WiFi ಚೆಕ್ ಮಾಡಿ &nbsp; ✅ ಮತ್ತೊಮ್ಮೆ ಒತ್ತಿರಿ<br>
+    ✅ ಚಿಕ್ಕ Size (512×512) ಆಯ್ಕೆ ಮಾಡಿ ಪ್ರಯತ್ನಿಸಿ
+    </span>`;
+}
+
+function generate(){
+  const prompt=document.getElementById('promptTxt').value.trim();
+  if(!prompt){ alert('ದಯವಿಟ್ಟು Prompt ಬರೆಯಿರಿ! 🙏'); return; }
+
+  const [w,h]=document.getElementById('sizeOpt').value.split('x').map(Number);
+  const quality=document.getElementById('qualOpt').value;
+  const full=`${prompt}, ${curStyle}, ${quality}, no watermark`;
+  const seed=Math.floor(Math.random()*999999);
+
+  // Direct URL — works from local file!
+  curUrl=`https://image.pollinations.ai/prompt/${encodeURIComponent(full)}?width=${w}&height=${h}&seed=${seed}&nologo=true`;
+
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('loadBox').classList.add('active');
+  document.getElementById('resultBox').classList.remove('active');
+  document.getElementById('errMsg').classList.remove('active');
+  document.getElementById('errMsg').innerHTML='';
+
+  document.getElementById('infoPrompt').textContent=prompt.substring(0,35)+'...';
+  document.getElementById('infoSize').textContent=`${w}×${h} • 8K`;
+  document.getElementById('dlBtn').href=curUrl;
+
+  // Set img src directly — this bypasses CORS block!
+  const img=document.getElementById('outImg');
+  img.src='';
+  setTimeout(()=>{ img.src=curUrl; }, 150);
+
+  // 2 min safety timeout
+  if(genTimer) clearTimeout(genTimer);
+  genTimer=setTimeout(onImgError, 120000);
+}
+
+function addHistory(url,prompt){
+  if(!url) return;
+  histArr.unshift({url,prompt});
+  if(histArr.length>8) histArr.pop();
+  const wrap=document.getElementById('histWrap');
+  const grid=document.getElementById('histGrid');
+  wrap.style.display='block'; grid.innerHTML='';
+  histArr.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='hist-item';
+    d.innerHTML=`<img src="${item.url}" loading="lazy"/><div class="hist-prompt">${item.prompt}</div>`;
+    d.onclick=()=>{
+      document.getElementById('outImg').src=item.url;
+      document.getElementById('resultBox').classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    grid.appendChild(d);
+  });
+}
+
+document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.key==='Enter') generate(); });
+</script>
+</body>
+</html>
